@@ -205,8 +205,7 @@ ghci> [[x,y] | x <- [1,2,3], y <- [4,5,6]]
 
 ### Tuples
 
-- Type is determined by how many elements are inside, unlike lists
-  - Functions for 2-tuples don't work for 3-tuples
+- Type is determined by how many elements are inside, unlike lists; Functions for 2-tuples don't work for 3-tuples
 
 - A tuple doesn't necessarily contain a homogenous set of elements
 
@@ -233,3 +232,121 @@ ghci> zip [0,1,2] ["Apple", "Orange"]
 ghci> [(a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2, a+b+c == 24]
 [(6,8,10)]
 ```
+
+### Types
+- Check type of an expression:
+```haskell
+ghci> :t "a"
+"a" :: [Char]
+ghci> :t 'a'
+'a' :: Char
+```
+
+- Types are usually written in capital case
+
+- `Int` is bounded integer, `Integer` is unbounded
+
+- `Float` is single-precision floating point, `Double` is double-precision
+
+- There are infinite-many tuple types, since types take the size of tuple into account
+
+## Generics
+
+- Lowercase letters used to describe generic types
+```haskell
+ghci> :t head
+head :: [a] -> a
+ghci> :t snd
+snd :: (a, b) -> b
+```
+
+## Typeclasses
+
+- A **typeclass** is like 'interfaces' in Java
+
+- The `Num` and `Eq` below are the class constraint
+```haskell
+ghci> :t (+)
+(+) :: Num a => a -> a -> a
+ghci> :t (==)
+(==) :: Eq a => a -> a -> Bool
+```
+
+- `Eq`
+  - Supports equality testing, requires members to implement `==` and `/=`
+- `Ord`
+  - Supports ordering, used in `<`, `>`, `<=` and `>=`
+  - Requires membership in `Eq`
+- `Show`
+  - Supports print as string
+- `Read`
+  - Opposite of `Show`, can read string and evaluate
+  - Can infer result type based on context, but w/o context, use **type annotations**
+- `Num`
+  - Numeric typeclass
+  - Requires membership in `Show` and `Eq`
+
+
+- Type annotations
+```haskell
+ghci> read "1" :: Float
+1.0
+```
+
+- `fromIntegral` converts `Integral` to `Num` - useful function for dealing with numbers
+
+### Patterns
+
+- Define patterns in input to return the corresponding value, kind of like a bunch of if else
+
+- Goes from top to bottom, so put most specific cases at the top
+```haskell
+threeOrFive :: (Integral a) => a -> String
+threeOrFive 3 = "THREE"
+threeOrFive 5 = "FIVE"
+threeOrFive x = show (fromIntegral x :: Integer) ++ " IS NOT THREE OR FIVE!"
+```
+
+- Recursion with base case first
+```haskell
+factorial :: (Integral a) => a -> a
+factorial 0 = 1
+factorial n = n * factorial (n - 1)
+```
+
+- Grab the elements in input
+```haskell
+-- Adding two vectors in R2
+addVectors :: (Num a) => (a, a) -> (a, a) -> (a, a)
+addVectors a b = ((+) (fst a) (fst b), (+) (snd a) (snd b))
+```
+```haskell
+-- Better way
+addVectors2 :: (Num a) => (a, a) -> (a, a) -> (a, a)
+addVectors2 (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
+```
+
+- List comprehension
+```haskell
+ghci> let points = [(1,2), (3,4), (5,6)]
+ghci> [(x + 1, y + 1) | (x, y) <- points]
+[(2,3),(4,5),(6,7)]
+```
+
+- Use underscore to match and throw away unused elements, and use parentheses around the pattern when matching multiple values
+```haskell
+tell :: (Show a) => [a] -> String
+tell [] = "The list is empty"
+tell [x] = "The list has one element: " ++ show x
+tell [x,y] = "The list has two elements: " ++ show x ++ " and " ++ show y
+tell (x:y:_) = "This list has 3 or more elements, with first two elements "++ show x ++ " and " ++ show y
+```
+
+- Match entire input to use inside function
+```haskell
+matchall :: String -> String
+matchall "" = "Empty string!"
+matchall all@(x:xs) = "The first letter of " ++ all ++ " is " ++ [x]
+```
+
+### Guards
