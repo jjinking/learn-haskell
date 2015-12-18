@@ -350,3 +350,36 @@ matchall all@(x:xs) = "The first letter of " ++ all ++ " is " ++ [x]
 ```
 
 ### Guards
+
+- Guards are kind of like `if else`
+```haskell
+ageTell :: (RealFloat a) => a -> String
+ageTell age
+  | age < 18.0 = "You're underage!"
+  | age < 21.0 = "You're a young adult!"
+  | age < 30.0 = "You're in your twenties!"
+  | otherwise  = "You're getting older and wiser!"
+```
+
+- Defining functions **infix** with backticks
+```haskell
+myCompare :: (Ord a) => a -> a -> Ordering
+a `myCompare` b
+  | a > b     = GT
+  | a == b    = EQ
+  | otherwise = LT
+```
+
+- Also can use `where` and `let` to set names that can be used within function and comprehensions to set variables
+
+### Recursion
+```haskell
+replicate' :: (Num i, Ord i) => i -> a -> [a]
+replicate' n x
+  | n <= 0    = []
+  | otherwise = x:replicate' (n-1) x
+```
+
+### Higher order functions take functions as parameters and returns functions
+
+- Curried functions - passing multiple values into a function is actually creating a function that takes in the first parameter, and then applying the second param, etc

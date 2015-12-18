@@ -44,3 +44,17 @@ tell (x:y:_) = "This list has 3 or more elements, with first two elements "++ sh
 matchall :: String -> String
 matchall "" = "Empty string!"
 matchall all@(x:xs) = "The first letter of " ++ all ++ " is " ++ [x]
+
+-- Guards
+ageTell :: (RealFloat a) => a -> String
+ageTell age
+  | age < 18.0 = "You're underage!"
+  | age < 21.0 = "You're a young adult!"
+  | age < 30.0 = "You're in your twenties!"
+  | otherwise  = "You're getting older and wiser!"
+
+
+replicate' :: (Num i, Ord i) => i -> a -> [a]
+replicate' n x
+  | n <= 0    = []
+  | otherwise = x:replicate' (n-1) x
