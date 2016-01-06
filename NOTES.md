@@ -86,6 +86,7 @@ ghci> [1,2,3] ++ [4]
 [1,2,3,4]
 ```
 
+
 - Inserting an element to beginning of list using `:` is fast
 ```haskell
 ghci> 'H': "ello World"
@@ -95,6 +96,8 @@ ghci> 1: [2,3]
 ghci> 1:2:3:[]
 [1,2,3]
 ```
+
+- When building up new lists from a list, build from the right, since `++` is much more expensie than `:`
 
 - Access elements using `!!`
 ```haskell
@@ -382,4 +385,17 @@ replicate' n x
 
 ### Higher order functions take functions as parameters and returns functions
 
+- Higher order functions: functions that take functions as parameter and outputs another function
+
+- Haskell actually allows one parameter per function
+
 - Curried functions - passing multiple values into a function is actually creating a function that takes in the first parameter, and then applying the second param, etc
+
+- `map`, `filter`, `foldl`, `foldr`, `foldl1`, `foldl2`, `scanl`, `scanr` explained very well in this section
+
+- Function application with `$` is right-associative, where as the regular space separators are left-associative. Also `$` can be used to use `map` to apply a list of functions to a single parameter value
+
+- Function composition `f . g = \x -> f (g x)`
+  - right-associative, makes it easy to create composed functions on the fly to pass to `map`
+  - also useful to define functions in point free style
+  - composing a long list of functions is bad style

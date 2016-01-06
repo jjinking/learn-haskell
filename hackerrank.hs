@@ -72,3 +72,24 @@ fib' 0 = 0
 fib' 1 = 0
 fib' 2 = 1
 fib' n = fib' (n-1) + fib' (n-2)
+
+-- pascals-triangle
+pascals :: Int -> [[Int]]
+pascals k = map pascalLine [1 .. k]
+pascalLine :: Int -> [Int]
+pascalLine k = [pascalEl (k-1) (l-1) | l <- [1 .. k]]
+pascalEl :: Int -> Int -> Int
+pascalEl n r
+  | n < 0 || r < 0 = 0
+  | r > n = 0
+  | n == 0 = 1
+  | otherwise = pascalEl (n - 1) (r - 1) + pascalEl (n - 1) r
+joinStrs :: String -> [String] -> String
+joinStrs delim = foldr1 (\x acc -> x ++ delim ++ acc)
+strPascalRow :: [Int] -> String
+strPascalRow xs = joinStrs " " (map show xs)
+
+main :: IO()
+main = do
+  n <- readLn :: IO Int
+  putStrLn (joinStrs "\n" (map strPascalRow (pascals n)))
