@@ -399,3 +399,20 @@ replicate' n x
   - right-associative, makes it easy to create composed functions on the fly to pass to `map`
   - also useful to define functions in point free style
   - composing a long list of functions is bad style
+
+### Modules
+
+- `import x` to import module x
+
+```haskell
+import Data.List
+import Data.List (nub, sort)
+import Data.List hiding (nub)
+import qualified Data.Map as M
+```
+
+- from ghci:
+
+```bash
+gchi> :m + Data.List Data.Map Data.Set Data.Char
+```

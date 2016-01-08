@@ -88,8 +88,16 @@ joinStrs :: String -> [String] -> String
 joinStrs delim = foldr1 (\x acc -> x ++ delim ++ acc)
 strPascalRow :: [Int] -> String
 strPascalRow xs = joinStrs " " (map show xs)
+-- main :: IO()
+-- main = do
+--   n <- readLn :: IO Int
+--   putStrLn (joinStrs "\n" (map strPascalRow (pascals n)))
 
+-- string-mingling
 main :: IO()
 main = do
   n <- readLn :: IO Int
   putStrLn (joinStrs "\n" (map strPascalRow (pascals n)))
+
+
+
