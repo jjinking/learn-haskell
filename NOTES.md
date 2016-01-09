@@ -408,7 +408,8 @@ replicate' n x
 import Data.List
 import Data.List (nub, sort)
 import Data.List hiding (nub)
-import qualified Data.Map as M
+import qualified Data.Map as Map
+import qualified Data.Set as Set
 ```
 
 - from ghci:
