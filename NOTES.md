@@ -417,3 +417,47 @@ import qualified Data.Set as Set
 ```bash
 gchi> :m + Data.List Data.Map Data.Set Data.Char
 ```
+
+### Custom types
+
+- Use `data` keyword followed by camelcase name of the type
+- `deriving` is used to show that the value type implements an interface
+  - Similar to **Go**, there are no explicit classes defined
+  - Value types implement interfaces if every parameter in the type implement the type also implement the interface, like `Show`
+
+```haskell
+data Point = Point Float Float deriving (Show)
+data Shape = Circle Point Float | Rectangle Point Point deriving (Show)
+```
+
+- Record syntax - automatically creates getters for the fields
+
+``` haskell
+data Person = Person {
+	firstName :: String
+	, lastName :: String
+	, age :: Int
+	, height :: Float
+	, phoneNumber :: String
+	, flavor :: String
+	} deriving (Show)
+```
+
+- Type parameters - generics
+  
+  - `Nothing` is polymorphic, since it doesn't actually contain a value
+  
+  - Don't put *type* constraints into data declarations since function type params require them anyway
+	  
+- Type synonyms - create synonyms for already existing type using `type` keyword
+  
+  - convey more information about already-existing types, like person's name for string, etc
+
+
+- Recursive data structures
+  
+  - Trees and Lists
+  
+
+- Typeclasses 102
+

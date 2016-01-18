@@ -94,10 +94,18 @@ strPascalRow xs = joinStrs " " (map show xs)
 --   putStrLn (joinStrs "\n" (map strPascalRow (pascals n)))
 
 -- string-mingling
+mingle :: String -> String -> Bool -> String
+mingle [] [] _ = []
+mingle [] (_:_) False = []
+mingle (_:_) [] True = []
+mingle (x:in1) in2 False = x:mingle in1 in2 True
+mingle in1 (x:in2) True = x:mingle in1 in2 False
+
 main :: IO()
 main = do
-  n <- readLn :: IO Int
-  putStrLn (joinStrs "\n" (map strPascalRow (pascals n)))
-
-
+  input1 <- getLine
+  input2 <- getLine
+  putStrLn $ mingle input1 input2 False
+  
+  
 
