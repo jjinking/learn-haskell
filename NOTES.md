@@ -453,11 +453,17 @@ data Person = Person {
   
   - convey more information about already-existing types, like person's name for string, etc
 
-
 - Recursive data structures
   
   - Trees and Lists
   
-
 - Typeclasses 102
+  
+  - `class` is used to define typeclass, which are like *interfaces* in **Go**
+	
+	- Typeclasses can be subclassed
+  
+  - Instead of `deriving`, use `instance` keyword to make types instances of typeclasses to customize behavior for the appropriate functions
+
+- **Functor** typeclass is for things that can be mapped over, like an *iterable*
 
