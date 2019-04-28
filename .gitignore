@@ -1,3 +1,4 @@
+*~
 dist
 cabal-dev
 *.o
@@ -14,5 +15,6 @@ cabal.sandbox.config
 *.prof
 *.aux
 *.hp
+
 
 scheme-48hrs/
