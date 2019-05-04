@@ -15,6 +15,11 @@ http://learnyouahaskell.com/
 ghci> :l fun.hs
 ```
 
+- Enable multi-line
+```haskell
+ghci> :set +m
+```
+
 - Put parentheses around negative numbers
 ```haskell
 3 * (-5)
@@ -374,6 +379,32 @@ a `myCompare` b
 ```
 
 - Also can use `where` and `let` to set names that can be used within function and comprehensions to set variables
+
+### Case Expressions
+
+```haskell
+data Pet = Cat | Dog | Fish
+
+hello :: Pet -> String
+hello x = 
+  case x of
+    Cat -> "meeow"
+    Dog -> "woof"
+    Fish -> "bubble"
+    
+data Pet = Cat | Dog | Fish | Parrot String
+
+hello :: Pet -> String
+hello x = 
+  case x of
+    Cat -> "meeow"
+    Dog -> "woof"
+    Fish -> "bubble"
+    Parrot name -> "pretty " ++ name
+    _ -> "grunt"    
+
+hello (Parrot "polly")
+```
 
 ### Recursion
 ```haskell
