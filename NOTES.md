@@ -10,6 +10,11 @@ http://learnyouahaskell.com/
 :set prompt "ghci> "
 ```
 
+- Enable multi-line
+```haskell
+:set +m
+```
+
 - Load script file in ghci
 ```haskell
 ghci> :l fun.hs
