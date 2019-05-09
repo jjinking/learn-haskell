@@ -481,27 +481,19 @@ data Person = Person {
 ```
 
 - Type parameters - generics
-  
   - `Nothing` is polymorphic, since it doesn't actually contain a value
-  
   - Don't put *type* constraints into data declarations since function type params require them anyway
 	  
 - Type synonyms - create synonyms for already existing type using `type` keyword
-  
   - convey more information about already-existing types, like person's name for string, etc
 
 - Recursive data structures
-  
   - Trees and Lists
   
 - Typeclasses 102
-  
   - `class` is used to define typeclass, which are like *interfaces* in **Go**
-	
 	- Typeclasses can be subclassed
-  
   - Instead of `deriving`, use `instance` keyword to make types instances of typeclasses to customize behavior for the appropriate functions
-  
         - If you use `deriving`, haskell will automatically generate an instance of `Show` for the new type.
 
 Example of a **type class**
