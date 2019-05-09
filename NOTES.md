@@ -501,14 +501,39 @@ data Person = Person {
 	- Typeclasses can be subclassed
   
   - Instead of `deriving`, use `instance` keyword to make types instances of typeclasses to customize behavior for the appropriate functions
+  
+        - If you use `deriving`, haskell will automatically generate an instance of `Show` for the new type.
 
 Example of a **type class**
 ```haskell
 
+-- Defining your own Show instance with customized behavior for `show` function
+data Foo = Bar | Baz
+
+instance Show Foo where
+  show Bar = "it is a bar"
+  show Baz = "this is a baz"
+
+
 -- Any type `a` that belongs to the type class `Color` can use the functions `dark` and `lighten`
- class Color a where
-      dark :: a -> Bool
-      lighten :: a -> a
+class Color a where
+  dark :: a -> Bool
+  lighten :: a -> a
+      
+data Bright = Blue | Red deriving (Read, Show)
+
+darkBright :: Bright -> Bool
+darkBright Blue = True
+darkBright Red  = False
+
+lightenBright :: Bright -> Bright
+lightenBright Blue = Red
+lightenBright Red = Red
+
+-- An instance declaration says that a type is a member of a type class
+instance Color Bright where
+  dark = darkBright
+  lighten = lightenBright
 ```
 
 - **Functor** typeclass is for things that can be mapped over, like an *iterable*
