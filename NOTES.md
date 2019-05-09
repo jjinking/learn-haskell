@@ -457,13 +457,14 @@ gchi> :m + Data.List Data.Map Data.Set Data.Char
 ### Custom types
 
 - Use `data` keyword followed by camelcase name of the type
-- `deriving` is used to show that the value type implements an interface
+- `deriving` is used to show that the value type implements an interface (a type class)
   - Similar to **Go**, there are no explicit classes defined
   - Value types implement interfaces if every parameter in the type implement the type also implement the interface, like `Show`
 
 ```haskell
 data Point = Point Float Float deriving (Show)
 data Shape = Circle Point Float | Rectangle Point Point deriving (Show)
+-- "Type constructor" Shape has "data constructors" Circle and Rectangle, and Shape belongs to the "type class" Show
 ```
 
 - Record syntax - automatically creates getters for the fields
@@ -500,6 +501,15 @@ data Person = Person {
 	- Typeclasses can be subclassed
   
   - Instead of `deriving`, use `instance` keyword to make types instances of typeclasses to customize behavior for the appropriate functions
+
+Example of a **type class**
+```haskell
+
+-- Any type `a` that belongs to the type class `Color` can use the functions `dark` and `lighten`
+ class Color a where
+      dark :: a -> Bool
+      lighten :: a -> a
+```
 
 - **Functor** typeclass is for things that can be mapped over, like an *iterable*
 
