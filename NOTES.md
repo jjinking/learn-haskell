@@ -456,20 +456,25 @@ gchi> :m + Data.List Data.Map Data.Set Data.Char
 
 ### Custom types
 
-- Use `data` keyword followed by camelcase name of the type
+- Think of the Haskell type/data system as 3 tiers:
+  - Type class, i.e. Show, Num, which can be **subclassed**, which define behavior, similar to interfaces in Java
+  - Value types, which are *instances* of a type class
+  - Value, which are instances of a Value type.
+- Use `class` keyword to create a custom type class
+- Use `data` keyword followed by camelcase name of the type to create Value types
 - `deriving` is used to show that the value type implements an interface (a type class)
-  - Similar to **Go**, there are no explicit classes defined
-  - Value types implement interfaces if every parameter in the type implement the type also implement the interface, like `Show`
-
-```haskell
-data Point = Point Float Float deriving (Show)
-data Shape = Circle Point Float | Rectangle Point Point deriving (Show)
--- "Type constructor" Shape has "data constructors" Circle and Rectangle, and Shape belongs to the "type class" Show
-```
-
-- Record syntax - automatically creates getters for the fields
+  - If you use `deriving`, haskell will automatically generate an instance of `Show` for the new type.
+- Instead of `deriving`, use `instance` keyword to make instances of typeclasses to customize behavior for the appropriate functions
+  - Value types implement typeclass interfaces if every parameter (data constructors) in the type also implement the typeclass interface
 
 ``` haskell
+-- Example of type constructors
+data Point = Point Float Float deriving (Show)
+
+-- "Type constructor" Shape has "data constructors" Circle and Rectangle, and Shape belongs to the "type class" Show
+data Shape = Circle Point Float | Rectangle Point Point deriving (Show)
+
+- Record syntax - automatically creates getters for the fields
 data Person = Person {
 	firstName :: String
 	, lastName :: String
@@ -490,12 +495,7 @@ data Person = Person {
 - Recursive data structures
   - Trees and Lists
   
-- Typeclasses 102
-  - `class` is used to define typeclass, which are like *interfaces* in **Go**
-	- Typeclasses can be subclassed
-  - Instead of `deriving`, use `instance` keyword to make types instances of typeclasses to customize behavior for the appropriate functions
-        - If you use `deriving`, haskell will automatically generate an instance of `Show` for the new type.
-
+  
 Example of a **type class**
 ```haskell
 
