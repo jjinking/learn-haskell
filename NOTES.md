@@ -528,5 +528,44 @@ instance Color Bright where
   lighten = lightenBright
 ```
 
-- **Functor** typeclass is for things that can be mapped over, like an *iterable*
+### **Functor** typeclass
+
+Things that can be mapped over, like an *iterable*
+
+### **Monad** typeclass
+
+```haskell
+ class Monad m where
+        return :: a -> m a
+        (>>=) :: m a -> (a -> m b) -> m b
+        (>>)   :: m a -> m b -> m b
+        fail   :: String -> m a
+```
+
+Example with `Maybe`
+
+```haskell
+data Maybe a = Just a | Nothing
+
+import Control.Monad
+
+instance Monad Maybe where
+    return           =   Just
+    Nothing  >>= f = Nothing
+    (Just x) >>= f = f x
+    fail _           =   Nothing
+    
+-- MonadPlus
+instance MonadPlus Maybe where
+    mzero               = Nothing
+    Nothing `mplus` x = x
+    x `mplus` _         = x
+```
+
+- Read learnyouahaskell
+- Watch youtube video that i found that summarizes learnyouahaskell
+- Watch the youtube video with fb employee
+- Watch safarionline course
+
+
 
