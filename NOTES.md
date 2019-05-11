@@ -562,10 +562,18 @@ instance MonadPlus Maybe where
     x `mplus` _         = x
 ```
 
+
 - Read learnyouahaskell
 - Watch youtube video that i found that summarizes learnyouahaskell
 - Watch the youtube video with fb employee
 - Watch safarionline course
-
-
+- Read articles
+  - https://www.lambdacat.com/the-midnight-monad-a-journey-to-enlightenment/
+  - https://en.wikibooks.org/wiki/Haskell/Understanding_monads
+  - Monads are burritos
+    - https://blog.plover.com/prog/burritos.html
+    - https://chrisdone.com/posts/monads-are-burritos/
+    - https://byorgey.wordpress.com/2009/01/12/abstraction-intuition-and-the-monad-tutorial-fallacy/
+  - http://blog.sigfpe.com/2006/08/you-could-have-invented-monads-and.html
+  - http://web.archive.org/web/20081206204420/http://www.loria.fr/~kow/monads/index.html
 
