@@ -277,31 +277,22 @@ ghci> 20 :: Double
 
 ### Patterns
 
-- Define patterns in input to return the corresponding value, kind of like a bunch of if else
-
-- Goes from top to bottom, so put most specific cases at the top
+- Goes from top to bottom, so put most specific cases at the top (base case)
 ```haskell
 threeOrFive :: (Integral a) => a -> String
 threeOrFive 3 = "THREE"
 threeOrFive 5 = "FIVE"
 threeOrFive x = show (fromIntegral x :: Integer) ++ " IS NOT THREE OR FIVE!"
-```
 
-- Recursion with base case first
-```haskell
+-- Recursion with base case first
 factorial :: (Integral a) => a -> a
 factorial 0 = 1
 factorial n = n * factorial (n - 1)
 ```
 
-- Grab the elements in input
+- Grab the elements in input **tuples**
 ```haskell
--- Adding two vectors in R2
-addVectors :: (Num a) => (a, a) -> (a, a) -> (a, a)
-addVectors a b = ((+) (fst a) (fst b), (+) (snd a) (snd b))
-```
-```haskell
--- Better way
+-- Adding two vectors in R2 by grabbing their individual components
 addVectors2 :: (Num a) => (a, a) -> (a, a) -> (a, a)
 addVectors2 (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
 ```
