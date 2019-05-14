@@ -207,25 +207,13 @@ ghci> [(a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2, a+b+c
 ```
 
 ### Types
-- Check type of an expression:
-```haskell
-ghci> :t "a"
-"a" :: [Char]
-ghci> :t 'a'
-'a' :: Char
-```
 
 - Types are usually written in capital case
-
-- `Int` is bounded integer, `Integer` is unbounded
-
-- `Float` is single-precision floating point, `Double` is double-precision
-
-- There are infinite-many tuple types, since types take the size of tuple into account
+- `Int` is bounded integer, `Integer` is unbounded but inefficient
 
 ## Generics
 
-- Lowercase letters used to describe generic types
+- Lowercase letters usually one of {a, b, c, d} used to describe generic types
 ```haskell
 ghci> :t head
 head :: [a] -> a
@@ -235,7 +223,8 @@ snd :: (a, b) -> b
 
 ## Typeclasses
 
-- A **typeclass** is like 'interfaces' in Java
+- A **typeclass** is like `interface` in Java
+- Set **class constraints** using `=>`
 
 - The `Num` and `Eq` below are the class constraint
 ```haskell
@@ -249,24 +238,42 @@ ghci> :t (==)
   - Supports equality testing, requires members to implement `==` and `/=`
 - `Ord`
   - Supports ordering, used in `<`, `>`, `<=` and `>=`
+  - Member types also implement `compare`
   - Requires membership in `Eq`
 - `Show`
   - Supports print as string
+  - Member types implement `show`
 - `Read`
+  - Member types implement `read`
   - Opposite of `Show`, can read string and evaluate
-  - Can infer result type based on context, but w/o context, use **type annotations**
+  - Can infer result type based on context, but w/o context, use **type annotations** ex: `read "5" :: Int`
+- `Enum`
+  - Member types implement `succ` and `pred` functions
+- `Bounded`
+  - Member types implement `minBound` and `maxBound` which are "polymorphic constants"
+  - All tuples whose components are members of `Bounded` are also in `Bounded`
 - `Num`
   - Numeric typeclass
   - Requires membership in `Show` and `Eq`
-
-
-- Type annotations
+ 
 ```haskell
-ghci> read "1" :: Float
-1.0
+-- Integer-number {..-1, -1, 0, 1, 2} literals are also "polymorphic constants"
+ghci> :t 20
+20 :: (Num t) => t  
+ghci> 20 :: Int  
+20  
+ghci> 20 :: Integer  
+20  
+ghci> 20 :: Float  
+20.0  
+ghci> 20 :: Double  
+20.0  
 ```
 
-- `fromIntegral` converts `Integral` to `Num` - useful function for dealing with numbers
+- `Integral` includes `Int` and `Integer`
+  - `fromIntegral` converts `Integral` to `Num` - useful function for dealing with numbers, e.g. ` fromIntegral (length [1,2,3,4]) + 3.2`
+- `Floating` includes `Float` and `Double`
+
 
 ### Patterns
 
