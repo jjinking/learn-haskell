@@ -313,7 +313,7 @@ tell [x,y] = "The list has two elements: " ++ show x ++ " and " ++ show y
 tell (x:y:_) = "This list has 3 or more elements, with first two elements "++ show x ++ " and " ++ show y
 ```
 
-- Match entire input to use inside function
+- Match entire input to use inside function using `@`, or *as patterns*
 ```haskell
 matchall :: String -> String
 matchall "" = "Empty string!"
@@ -322,7 +322,8 @@ matchall all@(x:xs) = "The first letter of " ++ all ++ " is " ++ [x]
 
 ### Guards
 
-- Guards are kind of like `if else`
+- Guards are similar to `if else`
+
 ```haskell
 ageTell :: (RealFloat a) => a -> String
 ageTell age
@@ -330,22 +331,81 @@ ageTell age
   | age < 21.0 = "You're a young adult!"
   | age < 30.0 = "You're in your twenties!"
   | otherwise  = "You're getting older and wiser!"
-```
 
-- Defining functions **infix** with backticks
-```haskell
+-- Defining functions **infix** with backticks
 myCompare :: (Ord a) => a -> a -> Ordering
 a `myCompare` b
   | a > b     = GT
   | a == b    = EQ
   | otherwise = LT
+
+-- Using `where` for the DRY principle
+bmiTell :: (RealFloat a) => a -> a -> String
+bmiTell weight height
+    | bmi <= skinny = "You're underweight, you emo, you!"
+    | bmi <= normal = "You're supposedly normal. Pffft, I bet you're ugly!"
+    | bmi <= fat    = "You're fat! Lose some weight, fatty!"
+    | otherwise     = "You're a whale, congratulations!"
+    where bmi = weight / height ^ 2
+          skinny = 18.5
+          normal = 25.0
+          fat = 30.0
+
+-- Pattern match inside `where` bindings
+initials :: String -> String -> String
+initials firstname lastname = [f] ++ ". " ++ [l] ++ "."
+    where (f:_) = firstname
+          (l:_) = lastname
+	  
+-- Define function `bmi` in `where` block
+calcBmis :: (RealFloat a) => [(a, a)] -> [a]
+calcBmis xs = [bmi w h | (w, h) <- xs]
+    where bmi weight height = weight / height ^ 2
 ```
 
-- Also can use `where` and `let` to set names that can be used within function and comprehensions to set variables
+### Let
+
+- `where` bindings are syntactic constructs
+- `let` bindings are expressions that evaluate a value, e.g. `4 * (let a = 9 in a + 1) + 2 `
+- `let` bindings are similar to `where` bindings, but more local; it doesn't span across guards.
+- form: `let <bindings> in <expression>`
+
+```haskell
+cylinder :: (RealFloat a) => a -> a -> a
+cylinder r h =
+    let sideArea = 2 * pi * r * h
+        topArea = pi * r ^2
+    in  sideArea + 2 * topArea
+    
+ -- Binding several variables inline
+ (let a = 100; b = 200; c = 300 in a*b*c, let foo="Hey "; bar = "there!" in foo ++ bar)
+(6000000,"Hey there!")
+
+-- List comprehension
+calcBmis :: (RealFloat a) => [(a, a)] -> [a]
+calcBmis xs = [bmi | (w, h) <- xs, let bmi = w / h ^ 2]
+```
 
 ### Case Expressions
 
+- Pattern matching on parameters in function definitions is syntactic sugar for using case expressions
+
 ```haskell
+head' :: [a] -> a
+head' [] = error "No head for empty lists!"
+head' (x:_) = x
+
+-- Same as the following
+head' :: [a] -> a
+head' xs = case xs of [] -> error "No head for empty lists!"
+                      (x:_) -> x
+
+-- Case expressions are not limited to function definitions
+describeList :: [a] -> String
+describeList xs = "The list is " ++ case xs of [] -> "empty."
+                                               [x] -> "a singleton list."
+                                               xs -> "a longer list."
+
 data Pet = Cat | Dog | Fish
 
 hello :: Pet -> String
