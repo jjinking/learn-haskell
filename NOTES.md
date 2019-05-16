@@ -430,7 +430,9 @@ hello (Parrot "polly")
 ```
 
 ### Recursion
+
 ```haskell
+-- `Num` is not subclass of `Ord`, so we have to specify both for subtraction and comparison
 replicate' :: (Num i, Ord i) => i -> a -> [a]
 replicate' n x
   | n <= 0    = []
