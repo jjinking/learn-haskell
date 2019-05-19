@@ -441,13 +441,14 @@ replicate' n x
 
 ### Higher order functions take functions as parameters and returns functions
 
-- Higher order functions: functions that take functions as parameter and outputs another function
+- Higher order functions are functions that take functions as parameter and/or outputs another function
 
-- Haskell actually allows one parameter per function
+- Haskell actually allows one parameter per function via currying
+  - Currying functions - converting a function that takes arg1..argN into a function that takes arg1, and returns a function that takes arg2, which returns a function that takes arg3, and so on.
 
-- Curried functions - passing multiple values into a function is actually creating a function that takes in the first parameter, and then applying the second param, etc
+- `map`, `filter`, `foldl`, `foldr`, `foldl1`, `foldl2`, `scanl`, `scanr` explained in detail [here](http://learnyouahaskell.com/higher-order-functions)
 
-- `map`, `filter`, `foldl`, `foldr`, `foldl1`, `foldl2`, `scanl`, `scanr` explained very well in this section
+- You cannot define several patterns for one parameter when defining **lambdas**
 
 - Function application with `$` is right-associative, where as the regular space separators are left-associative. Also `$` can be used to use `map` to apply a list of functions to a single parameter value
 
