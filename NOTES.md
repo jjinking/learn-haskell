@@ -448,14 +448,51 @@ replicate' n x
 
 - `map`, `filter`, `foldl`, `foldr`, `foldl1`, `foldl2`, `scanl`, `scanr` explained in detail [here](http://learnyouahaskell.com/higher-order-functions)
 
-- You cannot define several patterns for one parameter when defining **lambdas**
+- Usually use `foldr` when building up new lists from an input list
 
-- Function application with `$` is right-associative, where as the regular space separators are left-associative. Also `$` can be used to use `map` to apply a list of functions to a single parameter value
+- You cannot define several pattern-matching for one parameter when defining **lambdas**
+
+- Function application with `$` is right-associative, where as the regular space separators are left-associative
+
+```haskell
+sum (map sqrt [1..130])
+sum $ map sqrt [1..130]
+
+sqrt (3 + 4 + 9)
+sqrt $ 3 + 4 + 9
+
+f (g (z x))
+f $ g $ z x
+
+sum (filter (> 10) (map (*2) [2..10]))
+sum $ filter (> 10) $ map (*2) [2..10]
+
+-- `$` can be used to use `map` to apply a list of functions to a single parameter value
+ghci> map ($ 3) [(4+), (10*), (^2), sqrt]
+[7.0,30.0,9.0,1.7320508075688772]
+```
 
 - Function composition `f . g = \x -> f (g x)`
-  - right-associative, makes it easy to create composed functions on the fly to pass to `map`
-  - also useful to define functions in point free style
-  - composing a long list of functions is bad style
+  - composed functions are right-associative
+  
+```haskell
+replicate 100 (product (map (*3) (zipWith max [1,2,3,4,5] [4,5,6,7,8])))
+replicate 100 . product . map (*3) . zipWith max [1,2,3,4,5] $ [4,5,6,7,8]
+
+-- Function composition is useful to define functions in *point free* style (removing the `x` arg from both sides of `=` sign)
+fn x = ceiling (negate (tan (cos (max 50 x))))
+fn = ceiling . negate . tan . cos . max 50
+
+-- Composing a long list of functions is bad style
+oddSquareSum :: Integer  
+oddSquareSum = sum . takeWhile (<10000) . filter odd . map (^2) $ [1..]  
+-- This is more readable
+oddSquareSum :: Integer  
+oddSquareSum =   
+    let oddSquares = filter odd $ map (^2) [1..]  
+        belowLimit = takeWhile (<10000) oddSquares  
+    in  sum belowLimit  
+```
 
 ### Modules
 
