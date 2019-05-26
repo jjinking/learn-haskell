@@ -496,8 +496,6 @@ oddSquareSum =
 
 ### Modules
 
-- `import x` to import module x
-
 ```haskell
 import Data.List
 import Data.List (nub, sort)
@@ -510,6 +508,16 @@ import qualified Data.Set as Set
 
 ```bash
 gchi> :m + Data.List Data.Map Data.Set Data.Char
+```
+
+[haskell Standard Library modules list](https://downloads.haskell.org/~ghc/latest/docs/html/libraries/)
+
+Watch out for lazy folds. They produce **thunks**, a promise that a function will compute its value when asked to actually produce the result. May cause stack overflow.
+
+`concatMap` is like flatmap
+```haskell
+ghci> concatMap (replicate 4) [1..3]
+[1,1,1,1,2,2,2,2,3,3,3,3]
 ```
 
 ### Custom types
