@@ -524,36 +524,69 @@ ghci> concatMap (replicate 4) [1..3]
 
 - Think of the Haskell type/data system as 3 tiers:
   - Type class, i.e. Show, Num, which can be **subclassed**, which define behavior, similar to interfaces in Java
-  - Value types, which are *instances* of a type class
-  - Value, which are instances of a Value type.
+  - Value types, which are *instances* of a *type class*
+  - Value, which are instances of a *value type*
 - Use `class` keyword to create a custom type class
-- Use `data` keyword followed by camelcase name of the type to create Value types
+- Use `data` keyword followed by camelcase name of the type to create *value types*
 - `deriving` is used to show that the value type implements an interface (a type class)
   - If you use `deriving`, haskell will automatically generate an instance of `Show` for the new type.
 - Instead of `deriving`, use `instance` keyword to make instances of typeclasses to customize behavior for the appropriate functions
-  - Value types implement typeclass interfaces if every parameter (data constructors) in the type also implement the typeclass interface
+  - Value types implement typeclass interfaces if every parameter (data|value constructors) in the type also implement the typeclass interface
 
 ``` haskell
--- Example of type constructors
+-- Example of custom types
+data Bool = False | True
+data Int = -2147483648 | -2147483647 | ... | -1 | 0 | 1 | 2 | ... | 2147483647
 data Point = Point Float Float deriving (Show)
 
--- "Type constructor" Shape has "data constructors" Circle and Rectangle, and Shape belongs to the "type class" Show
+-- Value type `Shape` has "data|value constructors" `Circle` and `Rectangle`
+-- `Shape` belongs to the "type class" Show
+-- `Circle` and `Rectangle` are functions
 data Shape = Circle Point Float | Rectangle Point Point deriving (Show)
 
-- Record syntax - automatically creates getters for the fields
+-- Pattern match against value constructors
+surface :: Shape -> Float  
+surface (Circle _ r) = pi * r ^ 2  
+surface (Rectangle (Point x1 y1) (Point x2 y2)) = (abs $ x2 - x1) * (abs $ y2 - y1)
+```
+
+#### Exporting
+
+Don't export value constructors to hide implementation details, and force users to use certain functions to create instance of types. Also, users won't be able to pattern match against the value constructors
+
+```haskell
+module Shapes   
+( Point(..)  
+, Shape(..)  -- same as `Shape (Rectangle, Circle)`
+, surface  
+, nudge  
+, baseCircle  
+, baseRect  
+) where
+```
+
+#### Record syntax
+automatically creates getters for the fields
+
+```haskell
+-- Cumbersome to write getter methods for all the fields
+data Person = Person String String Int Float String String deriving (Show)
+
+-- Better
 data Person = Person {
-	firstName :: String
-	, lastName :: String
-	, age :: Int
-	, height :: Float
-	, phoneNumber :: String
-	, flavor :: String
+	firstName :: String,
+	lastName :: String,
+	age :: Int,
+	height :: Float,
+	phoneNumber :: String,
+	flavor :: String
 	} deriving (Show)
 ```
 
-- Type parameters - generics
-  - `Nothing` is polymorphic, since it doesn't actually contain a value
-  - Don't put *type* constraints into data declarations since function type params require them anyway
+#### Type parameters - generics
+
+- `Nothing` is polymorphic, since it doesn't actually contain a value
+- Don't put *type* constraints into data declarations since function type params require them anyway
 	  
 - Type synonyms - create synonyms for already existing type using `type` keyword
   - convey more information about already-existing types, like person's name for string, etc
