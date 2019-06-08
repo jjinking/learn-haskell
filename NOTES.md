@@ -522,12 +522,13 @@ ghci> concatMap (replicate 4) [1..3]
 
 ### Custom types
 
-- Think of the Haskell type/data system as 3 tiers:
-  - Type class, i.e. Show, Num, which can be **subclassed**, which define behavior, similar to interfaces in Java
-  - Value types, which are *instances* of a *type class*
-  - Value, which are instances of a *value type*
+Think of the Haskell type/data system as 3 tiers:
+  1. Type class, i.e. Show, Num, which can be **subclassed**, which define behavior, similar to interfaces in Java
+  2. Value types (ADT, or Algebraic Data Types), which are *instances* of a *type class*
+  3. Value, which are instances of a *value type*
+  
 - Use `class` keyword to create a custom type class
-- Use `data` keyword followed by camelcase name of the type to create *value types*
+- Use `data` keyword followed by camelcase name of the type to create *value types* (ADT)
 - `deriving` is used to show that the value type implements an interface (a type class)
   - If you use `deriving`, haskell will automatically generate an instance of `Show` for the new type.
 - Instead of `deriving`, use `instance` keyword to make instances of typeclasses to customize behavior for the appropriate functions
@@ -583,10 +584,20 @@ data Person = Person {
 	} deriving (Show)
 ```
 
-#### Type parameters - generics
+#### Type Constructors
 
-- `Nothing` is polymorphic, since it doesn't actually contain a value
-- Don't put *type* constraints into data declarations since function type params require them anyway
+Type constructors take types as parameters to produce new types, giving us *generics* similar to Java and C++
+
+```haskell
+-- Maybe is a "type constructor" since it takes a type parameter
+-- It takes a "type argument" `a` to "construct a type", so it's a "type constructor"
+-- `Nothing` is polymorphic, since it doesn't actually contain a value
+data Maybe a = Nothing | Just a
+
+-- Don't put *type* constraints into data declarations since function type params require them anyway
+data (Ord k) => Map k v = ...  
+```
+
 	  
 - Type synonyms - create synonyms for already existing type using `type` keyword
   - convey more information about already-existing types, like person's name for string, etc
