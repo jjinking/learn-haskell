@@ -584,7 +584,7 @@ data Person = Person {
 	} deriving (Show)
 ```
 
-#### Type Constructors
+#### Type Constructors Use Type Parameters
 
 Type constructors take types as parameters to produce new types, giving us *generics* similar to Java and C++
 
@@ -598,8 +598,9 @@ data Maybe a = Nothing | Just a
 data (Ord k) => Map k v = ...  
 ```
 
-	  
-- Type synonyms - create synonyms for already existing type using `type` keyword
+#### Type synonyms
+
+Create synonyms for already existing type using `type` keyword
   - convey more information about already-existing types, like person's name for string, etc
 
 - Recursive data structures
