@@ -617,9 +617,11 @@ type IntMap v = Map.Map Int v
 type IntMap = Map.Map Int
 ```
 
-- Recursive data structures
-  - Trees and Lists
-  
+#### Recursive data structures
+
+```haskell
+data List a = Empty | Cons a (List a) deriving (Show, Read, Eq, Ord)  
+```
   
 Example of a **type class**
 ```haskell
