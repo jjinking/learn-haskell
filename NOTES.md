@@ -711,16 +711,51 @@ class (Eq a) => Num a where
 
 ```haskell
 -- `Maybe` by itself is not a concrete type since it is a type constructor, so we use a variable `m`
+-- since in the class definition above, the `a` represents a concrete type
 -- Also, m has to be in `Eq` since we are using `==` on x and y, which are instances of m
 instance (Eq m) => Eq (Maybe m) where
   Just x == Just y = x == y
   Nothing == Nothing = True
   _ == _ = False
+  
+-- Get info about a typeclass and all types that are instances of it
+:info Show
+
+-- Get info about a type or type constructor, and all typeclasses that the type is in
+:info Maybe
+
+-- Get info about a function and its type signature
+:info map
 ```
 
 ### **Functor** typeclass
 
-Things that can be mapped over, like an *iterable*
+```haskell
+-- Looking at the `fmap` type annotation, `f` represents a type constructor, not a concrete type
+class Functor f where
+    fmap :: (a -> b) -> f a -> f b
+    
+-- Use a type constructor, i.e. `[]` since `f` above represents a type constructor
+instance Functor [] where
+    fmap = map
+    
+-- Simple example
+instance Functor Maybe where
+    fmap f (Just x) = Just (f x)
+    fmap f Nothing = Nothing
+    
+-- Recursive example
+instance Functor Tree where
+    fmap f EmptyTree = EmptyTree
+    fmap f (Node x leftsub rightsub) = Node (f x) (fmap f leftsub) (fmap f rightsub)
+    
+-- The `Functor` typeclass wants a type constructor that takes only one type parameter
+-- Partially apply the left parameter so there's only one free parameter
+-- `Either a` is a type constructor with one type parameter
+instance Functor (Either a) where
+    fmap f (Right x) = Right (f x)
+    fmap f (Left x) = Left x
+```
 
 ### **Monad** typeclass
 
