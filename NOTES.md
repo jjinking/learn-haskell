@@ -586,10 +586,10 @@ data Person = Person {
 
 #### Type Constructors Use Type Parameters
 
-Type constructors take types as parameters to produce new types, giving us *generics* similar to Java and C++
+Type constructors take types as parameters to produce concrete types, giving us *generics* similar to Java and C++
 
 ```haskell
--- Maybe is a "type constructor" since it takes a type parameter
+-- Maybe **not a type**. It is a **type constructor** since it takes a type parameter
 -- It takes a "type argument" `a` to "construct a type", so it's a "type constructor"
 -- `Nothing` is polymorphic, since it doesn't actually contain a value
 data Maybe a = Nothing | Just a
@@ -600,8 +600,22 @@ data (Ord k) => Map k v = ...
 
 #### Type synonyms
 
-Create synonyms for already existing type using `type` keyword
-  - convey more information about already-existing types, like person's name for string, etc
+Create synonyms for already existing type using `type` keyword to convey more information about already-existing types, like person's name for string, etc
+
+```haskell
+type String = [Char]
+type PhoneNumber = String
+type Name = String
+type PhoneBook = [(String,String)]
+type PhoneBook = [(Name,PhoneNumber)]
+
+-- Parameterized type synonyms are type constructors
+type AssocList k v = [(k,v)]
+
+-- Partially apply type parameters to get new type constructors
+type IntMap v = Map.Map Int v
+type IntMap = Map.Map Int
+```
 
 - Recursive data structures
   - Trees and Lists
