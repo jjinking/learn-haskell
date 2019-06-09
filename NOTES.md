@@ -645,16 +645,36 @@ treeElem x (Node a left right)
 let numsTree = foldr treeInsert EmptyTree nums
 ```
 
-Example of a **type class**
+#### Typeclasses
+
 ```haskell
+-- `Eq` typeclass in standard prelude
+-- Here `a` represents a type that is an instance of `Eq`
+-- The recursive definitions of `==` and `/=` enable easy "minimal complete definition" for instances
+class Eq a where
+    (==) :: a -> a -> Bool
+    (/=) :: a -> a -> Bool
+    x == y = not (x /= y)
+    x /= y = not (x == y)
+    
+-- Example instance
+data TrafficLight = Red | Yellow | Green
 
--- Defining your own Show instance with customized behavior for `show` function
-data Foo = Bar | Baz
+-- Just need to implement `==` since `\=` is defined in the typeclass definition
+instance Eq TrafficLight where
+    Red == Red = True
+    Green == Green = True
+    Yellow == Yellow = True
+    _ == _ = False
+    
+-- Manually defining instance of `Show` instead of using `deriving Show`
+-- Deriving would have just translated value constructors to strings, but here we can add "light"
+instance Show TrafficLight where
+    show Red = "Red light"
+    show Yellow = "Yellow light"
+    show Green = "Green light"
 
-instance Show Foo where
-  show Bar = "it is a bar"
-  show Baz = "this is a baz"
-
+-- Another example
 
 -- Any type `a` that belongs to the type class `Color` can use the functions `dark` and `lighten`
 class Color a where
@@ -675,6 +695,27 @@ lightenBright Red = Red
 instance Color Bright where
   dark = darkBright
   lighten = lightenBright
+```
+
+##### Typeclasses that extend (subclass) other typeclasses
+
+Implemented using class constraints in *class* declarations
+
+```haskell
+--- `Num` typeclass requires that a be an instance of `Eq` also
+class (Eq a) => Num a where
+	...
+```
+
+##### Type constructors as instances of typeclasses
+
+```haskell
+-- `Maybe` by itself is not a concrete type since it is a type constructor, so we use a variable `m`
+-- Also, m has to be in `Eq` since we are using `==` on x and y, which are instances of m
+instance (Eq m) => Eq (Maybe m) where
+  Just x == Just y = x == y
+  Nothing == Nothing = True
+  _ == _ = False
 ```
 
 ### **Functor** typeclass
