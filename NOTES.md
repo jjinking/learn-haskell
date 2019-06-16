@@ -814,6 +814,27 @@ Frank {frankField = ["HELLO"]}
 
 ## I/O
 
+A way to deal with side-effects
+
+```haskell
+-- putStrLn takes a String and returns I/O action that has a result type of (), or unit
+-- The empty tuple is a value of () and it also has a type of ()
+ghci> :t putStrLn
+putStrLn :: String -> IO ()
+ghci> :t putStrLn "hello, world"
+putStrLn "hello, world" :: IO ()
+```
+
+I/O action runs inside **main**
+
+```haskell
+-- `main` always has a type signature of `main :: IO a`
+-- Convention is to not specify a type declaration for main
+main = do
+    putStrLn "Hello, what's your name?"
+    name <- getLine
+    putStrLn ("Hey " ++ name ++ ", you rock!")
+```
 
 ### *Monad* typeclass
 
