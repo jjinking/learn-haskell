@@ -782,6 +782,36 @@ ghci> :k Either String Int
 Either String Int :: *
 ```
 
+#### Type-foo
+
+Perhaps over-indulging in "type theory" aka "type theory porn"
+
+```haskell
+-- t has to have kind * -> (* -> *) -> *
+class Tofu t where
+    tofu :: j a -> t a j
+
+-- Creating a type with a kind like 't' above
+data Frank a j  = Frank {frankField :: j a} deriving (Show)
+
+-- Creating some Frank values
+ghci> :t Frank {frankField = Just "HAHA"}  
+Frank {frankField = Just "HAHA"} :: Frank [Char] Maybe  
+ghci> :t Frank {frankField = Node 'a' EmptyTree EmptyTree}  
+Frank {frankField = Node 'a' EmptyTree EmptyTree} :: Frank Char Tree  
+ghci> :t Frank {frankField = "YES"}  
+Frank {frankField = "YES"} :: Frank Char []  
+
+-- Making Frank an instance of tofu
+instance Tofu Frank where
+    tofu x = Frank x
+    
+ghci> tofu (Just 'a') :: Frank Char Maybe
+Frank {frankField = Just 'a'}
+ghci> tofu ["HELLO"] :: Frank [Char] []
+Frank {frankField = ["HELLO"]}
+```
+
 ### *Monad* typeclass
 
 ```haskell
