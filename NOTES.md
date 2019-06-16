@@ -444,7 +444,8 @@ replicate' n x
 - Higher order functions are functions that take functions as parameter and/or outputs another function
 
 - Haskell actually allows one parameter per function via currying
-  - Currying functions - converting a function that takes arg1..argN into a function that takes arg1, and returns a function that takes arg2, which returns a function that takes arg3, and so on.
+  - **Currying** functions - converting a function that takes arg1..argN into a function that takes arg1, and returns a function that takes arg2, which returns a function that takes arg3, and so on.
+  - Currying enables us to create **partial** functions, which are functions that have some of their parameters already applied to them.
 
 - `map`, `filter`, `foldl`, `foldr`, `foldl1`, `foldl2`, `scanl`, `scanr` explained in detail [here](http://learnyouahaskell.com/higher-order-functions)
 
@@ -728,7 +729,7 @@ instance (Eq m) => Eq (Maybe m) where
 :info map
 ```
 
-### **Functor** typeclass
+### *Functor* typeclass
 
 ```haskell
 -- Looking at the `fmap` type annotation, `f` represents a type constructor, not a concrete type
@@ -757,7 +758,31 @@ instance Functor (Either a) where
     fmap f (Left x) = Left x
 ```
 
-### **Monad** typeclass
+### *Kinds*
+
+kind = type of a type
+
+```haskell
+-- * means Int is a "concrete type", which doesn't take any type params (btw, functions are also concrete)
+ghci> :k Int
+Int :: *
+
+-- Maybe type constructor takes a concrete type (ex: Int) and returns a concrete type (ex: Maybe Int)
+ghci> :k Maybe
+Maybe :: * -> *
+ghci> :k Maybe Int
+Maybe Int :: *
+
+-- Type constructors are curried, so we can partially apply them.
+ghci> :k Either
+Either :: * -> * -> *
+ghci> :k Either String
+Either String :: * -> *
+ghci> :k Either String Int
+Either String Int :: *
+```
+
+### *Monad* typeclass
 
 ```haskell
  class Monad m where
