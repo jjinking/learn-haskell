@@ -1,7 +1,7 @@
 ### Sources
 http://learnyouahaskell.com/
 
-### General
+## General
 
 - GHCi is the Glasgow Haskell Compiler interactive environment
 
@@ -429,7 +429,7 @@ hello x =
 hello (Parrot "polly")
 ```
 
-### Recursion
+## Recursion
 
 ```haskell
 -- `Num` is not subclass of `Ord`, so we have to specify both for subtraction and comparison
@@ -439,7 +439,7 @@ replicate' n x
   | otherwise = x:replicate' (n-1) x
 ```
 
-### Higher order functions take functions as parameters and returns functions
+## Higher order functions take functions as parameters and returns functions
 
 - Higher order functions are functions that take functions as parameter and/or outputs another function
 
@@ -495,7 +495,7 @@ oddSquareSum =
     in  sum belowLimit  
 ```
 
-### Modules
+## Modules
 
 ```haskell
 import Data.List
@@ -521,7 +521,7 @@ ghci> concatMap (replicate 4) [1..3]
 [1,1,1,1,2,2,2,2,3,3,3,3]
 ```
 
-### Custom types
+## Custom types
 
 Think of the Haskell type/data system as 3 tiers:
   1. Type class, i.e. Show, Num, which can be **subclassed**, which define behavior, similar to interfaces in Java
@@ -552,7 +552,7 @@ surface (Circle _ r) = pi * r ^ 2
 surface (Rectangle (Point x1 y1) (Point x2 y2)) = (abs $ x2 - x1) * (abs $ y2 - y1)
 ```
 
-#### Exporting
+### Exporting
 
 Don't export value constructors to hide implementation details, and force users to use certain functions to create instance of types. Also, users won't be able to pattern match against the value constructors
 
@@ -567,7 +567,7 @@ module Shapes
 ) where
 ```
 
-#### Record syntax
+### Record syntax
 automatically creates getters for the fields
 
 ```haskell
@@ -585,7 +585,7 @@ data Person = Person {
 	} deriving (Show)
 ```
 
-#### Type Constructors Use Type Parameters
+### Type Constructors Use Type Parameters
 
 Type constructors take types as parameters to produce concrete types, giving us *generics* similar to Java and C++
 
@@ -599,7 +599,7 @@ data Maybe a = Nothing | Just a
 data (Ord k) => Map k v = ...  
 ```
 
-#### Type synonyms
+### Type synonyms
 
 Create synonyms for already existing type using `type` keyword to convey more information about already-existing types, like person's name for string, etc
 
@@ -618,7 +618,7 @@ type IntMap v = Map.Map Int v
 type IntMap = Map.Map Int
 ```
 
-#### Recursive data structures
+### Recursive data structures
 
 ```haskell
 data List a = Empty | Cons a (List a) deriving (Show, Read, Eq, Ord)
@@ -646,7 +646,7 @@ treeElem x (Node a left right)
 let numsTree = foldr treeInsert EmptyTree nums
 ```
 
-#### Typeclasses
+## Typeclasses
 
 ```haskell
 -- `Eq` typeclass in standard prelude
@@ -698,7 +698,7 @@ instance Color Bright where
   lighten = lightenBright
 ```
 
-##### Typeclasses that extend (subclass) other typeclasses
+### Typeclasses that extend (subclass) other typeclasses
 
 Implemented using class constraints in *class* declarations
 
@@ -708,7 +708,7 @@ class (Eq a) => Num a where
 	...
 ```
 
-##### Type constructors as instances of typeclasses
+### Type constructors as instances of typeclasses
 
 ```haskell
 -- `Maybe` by itself is not a concrete type since it is a type constructor, so we use a variable `m`
@@ -782,7 +782,7 @@ ghci> :k Either String Int
 Either String Int :: *
 ```
 
-#### Type-foo
+### Type-foo
 
 Perhaps over-indulging in "type theory" aka "type theory porn"
 
@@ -811,6 +811,9 @@ Frank {frankField = Just 'a'}
 ghci> tofu ["HELLO"] :: Frank [Char] []
 Frank {frankField = ["HELLO"]}
 ```
+
+## I/O
+
 
 ### *Monad* typeclass
 
