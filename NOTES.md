@@ -825,7 +825,7 @@ ghci> :t putStrLn "hello, world"
 putStrLn "hello, world" :: IO ()
 ```
 
-I/O action only runs inside `main`
+I/O action only runs (e.g. prints to screen, or reads from input) inside `main`. Otherwise, they are just values that don't do anything.
 
 ```haskell
 -- `main` always has a type signature of `main :: IO a`
