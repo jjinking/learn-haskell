@@ -825,7 +825,7 @@ ghci> :t putStrLn "hello, world"
 putStrLn "hello, world" :: IO ()
 ```
 
-I/O action runs inside **main**
+I/O action only runs inside `main`
 
 ```haskell
 -- `main` always has a type signature of `main :: IO a`
@@ -834,6 +834,72 @@ main = do
     putStrLn "Hello, what's your name?"
     name <- getLine
     putStrLn ("Hey " ++ name ++ ", you rock!")
+```
+
+Using `let` bindings inside `do` block
+
+```haskell
+import Data.Char  
+
+main = do  
+    putStrLn "What's your first name?"
+    firstName <- getLine
+    putStrLn "What's your last name?"
+    lastName <- getLine
+    let bigFirstName = map toUpper firstName
+        bigLastName = map toUpper lastName
+    putStrLn $ "hey " ++ bigFirstName ++ " " ++ bigLastName ++ ", how are you?"
+```
+
+Using `return` and conditionals
+
+```haskell
+main = do
+    line <- getLine
+    if null line
+        then return ()
+        else do
+            putStrLn $ reverseWords line
+            main
+  
+reverseWords :: String -> String
+reverseWords = unwords . map reverse . words
+```
+
+`return` makes an I/O action out of a pure value. It **does not** end execution of a function. It's the opposite of `<-`
+
+```haskell
+main = do
+    a <- return "hell"
+    b <- return "yeah!"
+    putStrLn $ a ++ " " ++ b
+
+main = do
+    let a = "hell"
+        b = "yeah"
+    putStrLn $ a ++ " " ++ b
+```
+
+Recursion in I/O
+
+```haskell
+putStr :: String -> IO ()
+putStr [] = return ()
+putStr (x:xs) = do
+    putChar x
+    putStr xs
+```
+
+Print just converts a value to `String` by calling `show` on it, then writes to terminal using `putStrLn`. GHCI uses `print` in the print stage of the repl.
+
+```haskell
+print = putStrLn . show
+
+main = do   print True
+            print 2
+            print "haha"
+            print 3.2
+            print [3,4,3]
 ```
 
 ### *Monad* typeclass
