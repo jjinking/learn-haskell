@@ -902,6 +902,72 @@ main = do   print True
             print [3,4,3]
 ```
 
+### Files and Streams
+
+`getContents` reads from std input line by line until end-of-file, or ctrl-d
+
+```haskell
+import Data.Char
+
+main = do
+    contents <- getContents
+    putStr (map toUpper contents)
+```
+
+`interact` implements a common pattern of taking a string from input, transforming it, then outputting
+
+```haskell
+main = interact shortLinesOnly  
+
+shortLinesOnly :: String -> String
+shortLinesOnly input =
+    let allLines = lines input
+        shortLines = filter (\line -> length line < 10) allLines
+        result = unlines shortLines
+    in  result 
+```
+
+Reading a file and printing to screen
+
+```haskell
+import System.IO
+
+-- openFile :: FilePath -> IOMode -> IO Handle
+-- type FilePath = String
+-- data IOMode = ReadMode | WriteMode | AppendMode | ReadWriteMode
+-- hGetContents is like getContents, but from a file handle
+main = do
+    handle <- openFile "girlfriend.txt" ReadMode
+    contents <- hGetContents handle
+    putStr contents
+    hClose handle
+    
+-- Using `withfile` no need to close file after
+import System.IO
+
+main = do
+    withFile "girlfriend.txt" ReadMode (\handle -> do
+        contents <- hGetContents handle
+        putStr contents)
+	
+-- Reading contents from file with `readFile` is shorter
+import System.IO
+
+main = do
+    contents <- readFile "girlfriend.txt"
+    putStr contents
+    
+-- Reading from a file, then writing to another file
+import System.IO
+import Data.Char
+
+main = do
+    contents <- readFile "girlfriend.txt"
+    writeFile "girlfriendcaps.txt" (map toUpper contents)
+```
+
+
+
 ### *Monad* typeclass
 
 ```haskell
