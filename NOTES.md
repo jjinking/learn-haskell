@@ -966,6 +966,34 @@ main = do
     writeFile "girlfriendcaps.txt" (map toUpper contents)
 ```
 
+### Command Line Args
+
+```haskell
+import System.Environment
+import Data.List
+
+main = do
+   args <- getArgs
+   progName <- getProgName
+   putStrLn "The arguments are:"
+   mapM putStrLn args
+   putStrLn "The program name is:"
+   putStrLn progName
+```
+
+```bash
+$ ./arg-test first second w00t "multi word arg"  
+The arguments are:  
+first  
+second  
+w00t  
+multi word arg  
+The program name is:  
+arg-test  
+```
+
+### Random Numbers
+
 
 
 ### *Monad* typeclass
