@@ -994,6 +994,63 @@ arg-test
 
 ### Random Numbers
 
+```haskell
+-- Random number generators of different types
+ghci> random (mkStdGen 949488) :: (Float, StdGen)
+(0.8938442,1597344447 1655838864)
+ghci> random (mkStdGen 949488) :: (Bool, StdGen)
+(False,1485632275 40692)
+ghci> random (mkStdGen 949488) :: (Integer, StdGen)
+(1691547873,1597344447 1655838864)
+
+-- 3 coin flips
+threeCoins :: StdGen -> (Bool, Bool, Bool)
+threeCoins gen =
+    let (firstCoin, newGen) = random gen
+        (secondCoin, newGen') = random newGen
+        (thirdCoin, newGen'') = random newGen'
+    in  (firstCoin, secondCoin, thirdCoin)
+    
+-- infinite sequence of random values
+ghci> take 5 $ randoms (mkStdGen 11) :: [Int]
+[-1807975507,545074951,-1015194702,-1622477312,-502893664]
+ghci> take 5 $ randoms (mkStdGen 11) :: [Bool]
+[True,True,True,True,False]
+ghci> take 5 $ randoms (mkStdGen 11) :: [Float]
+[7.904789e-2,0.62691015,0.26363158,0.12223756,0.38291094]
+
+-- Random values in a range
+ghci> randomR (1,6) (mkStdGen 359353)
+(6,1494289578 40692)
+ghci> randomR (1,6) (mkStdGen 35935335)
+(3,1250031057 40692)
+
+-- Stream of random values in a range
+ghci> take 10 $ randomRs ('a','z') (mkStdGen 3) :: [Char]  
+"ndkxbvmomg"
+```
+
+Using getStdGen :: IO StdGen from System.Random
+
+```haskell
+import System.Random
+
+main = do
+    gen <- getStdGen
+    putStr $ take 20 (randomRs ('a','z') gen)
+```
+
+Use `newStdGen` to get new random number generator
+
+```haskell
+import System.Random
+
+main = do
+    gen <- getStdGen
+    putStrLn $ take 20 (randomRs ('a','z') gen)
+    gen' <- newStdGen
+    putStr $ take 20 (randomRs ('a','z') gen')
+```
 
 
 ### *Monad* typeclass
