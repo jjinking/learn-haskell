@@ -1052,6 +1052,73 @@ main = do
     putStr $ take 20 (randomRs ('a','z') gen')
 ```
 
+### Bytestrings
+
+Better performance for programs that read a lot of data into strings by reading data into chunks, and processing them chunks at a time, reducing IO latency.
+
+```haskell
+-- 64K bytes read in per time, rest are lazily loaded
+import qualified Data.ByteString.Lazy as B
+-- Strict bytestrings
+import qualified Data.ByteString as S
+```
+
+Example copying files using Bytestrings rather than Strings
+
+```haskell
+import System.Environment
+import qualified Data.ByteString.Lazy as B
+
+main = do
+    (fileName1:fileName2:_) <- getArgs
+    copyFile fileName1 fileName2
+
+copyFile :: FilePath -> FilePath -> IO ()
+copyFile source dest = do
+    contents <- B.readFile source
+    B.writeFile dest contents
+```
+
+### Exceptions
+
+"Pure code can throw exceptions, but it they can only be caught in the I/O part of our code (when we're inside a do block that goes into main). That's because you don't know when (or if) anything will be evaluated in pure code, because it is lazy and doesn't have a well-defined order of execution, whereas I/O code does." (from Learnyouahaskell)
+
+Don't use exception in the pure part of the code, just use them in I/O only.
+
+```haskell
+import System.Environment
+import System.IO
+import System.IO.Error
+
+main = toTry `catch` handler
+   
+toTry :: IO ()
+toTry = do (fileName:_) <- getArgs
+           contents <- readFile fileName
+           putStrLn $ "The file has " ++ show (length (lines contents)) ++ " lines!"
+
+handler :: IOError -> IO ()
+handler e
+    | isDoesNotExistError e =
+        case ioeGetFileName e of Just path -> putStrLn $ "Whoops! File does not exist at: " ++ path
+                                 Nothing -> putStrLn "Whoops! File does not exist at unknown location!"
+    | otherwise = ioError e
+```
+
+"Using case expressions is commonly used when you want to pattern match against something without bringing in a new function" (from Learnyouahaskell)
+
+Predicates that act on `IOError`
+
+- `isAlreadyExistsError`
+- `isDoesNotExistError`
+- `isAlreadyInUseError`
+- `isFullError`
+- `isEOFError`
+- `isIllegalOperation`
+- `isPermissionError`
+- `isUserError`
+
+
 
 ### *Monad* typeclass
 
