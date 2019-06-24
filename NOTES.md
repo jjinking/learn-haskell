@@ -758,6 +758,22 @@ instance Functor (Either a) where
     fmap f (Left x) = Left x
 ```
 
+IO Functor example
+
+```haskell
+import Data.Char
+import Data.List
+
+main = do line <- fmap (intersperse '-' . reverse . map toUpper) getLine
+          putStrLn line
+```
+
+`(->) r` is a type constructor with a single concrete type parameter, and a functor. Using `fmap` on functions is function composition. Note: (-> r a) is the same as r -> a
+
+`fmap :: (a -> b) -> (f a -> f b)` shows that `fmap` *lifts* a function `a -> b` to `f a -> f b`
+
+
+
 ### *Kinds*
 
 kind = type of a type
