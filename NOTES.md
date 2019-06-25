@@ -779,6 +779,7 @@ identity `id` and function composition `f.g`
 ### Applicatives
 
 Typeclass that defines two methods, `pure` and `<*>`
+`Applicatives` allow us to combine different computations, such as I/O computations, non-deterministic computations, computations that might have failed, etc. by using the applicative style. Just by using `<$>` and `<*>` we can use normal functions to uniformly operate on any number of applicative functors and take advantage of the semantics of each one. (from Learnyouahaskell)
 
 ```haskell
 -- Applicatives require members to be Functors
@@ -864,7 +865,64 @@ myAction = (++) <$> getLine <*> getLine
 instance Applicative ((->) r) where
     pure x = (\_ -> x)
     f <*> g = \x -> f x (g x)
+    
+ghci> (pure 3) "blah"
+3
+
+ghci> :t (+) <$> (+3) <*> (*100)
+(+) <$> (+3) <*> (*100) :: (Num a) => a -> a
+ghci> (+) <$> (+3) <*> (*100) $ 5
+508
+ghci> (\x y z -> [x,y,z]) <$> (+3) <*> (*2) <*> (/2) $ 5
+[8.0,10.0,2.5]
 ```
+
+`ZipList` is an `Applicative`
+
+```haskell
+instance Applicative ZipList where
+        pure x = ZipList (repeat x)
+        ZipList fs <*> ZipList xs = ZipList (zipWith (\f x -> f x) fs xs)
+
+ghci> getZipList $ (+) <$> ZipList [1,2,3] <*> ZipList [100,100,100]
+[101,102,103]
+ghci> getZipList $ (+) <$> ZipList [1,2,3] <*> ZipList [100,100..]
+[101,102,103]
+ghci> getZipList $ max <$> ZipList [1,2,3,4,5,3] <*> ZipList [5,3,1,2]
+[5,3,3,4]
+ghci> getZipList $ (,,) <$> ZipList "dog" <*> ZipList "cat" <*> ZipList "rat"
+[('d','c','r'),('o','a','a'),('g','t','t')]
+
+-- Applicative functors are more powerful than regular functors because it can apply functions between several functors
+liftA2 :: (Applicative f) => (a -> b -> c) -> f a -> f b -> f c
+liftA2 f a b = f <$> a <*> b
+
+ghci> liftA2 (:) (Just 3) (Just [4])
+Just [3,4]
+ghci> (:) <$> Just 3 <*> Just [4]
+Just [3,4]
+
+-- Function that converts a list of functors to a functor of a list
+sequenceA :: (Applicative f) => [f a] -> f [a]
+sequenceA [] = pure []
+sequenceA (x:xs) = (:) <$> x <*> sequenceA xs
+
+-- Another implementation using `foldr` and `liftA2`
+sequenceA :: (Applicative f) => [f a] -> f [a]
+sequenceA = foldr (liftA2 (:)) (pure [])
+
+ghci> sequenceA [Just 3, Just 2, Just 1]
+Just [3,2,1]
+ghci> sequenceA [Just 3, Nothing, Just 1]
+Nothing
+ghci> sequenceA [(+3),(+2),(+1)] 3
+[6,5,4]
+ghci> sequenceA [[1,2,3],[4,5,6]]
+[[1,4],[1,5],[1,6],[2,4],[2,5],[2,6],[3,4],[3,5],[3,6]]
+ghci> sequenceA [[1,2,3],[4,5,6],[3,4,4],[]]
+[]
+```
+
 
 ### *Kinds*
 
