@@ -809,8 +809,62 @@ ghci> pure (+) <*> Just 3 <*> Nothing
 Nothing
 ghci> pure (+) <*> Nothing <*> Just 5
 Nothing
+
+-- fmap as an infix operator
+(<$>) :: (Functor f) => (a -> b) -> f a -> f b
+f <$> x = fmap f x
+
+ghci> (++) <$> Just "johntra" <*> Just "volta"
+Just "johntravolta"
+
+ghci> (++) "johntra" "volta"
+"johntravolta"
 ```
 
+`List` is an `Applicative`
+
+```haskell
+instance Applicative [] where
+    pure x = [x]
+    fs <*> xs = [f x | f <- fs, x <- xs]
+
+ghci> [(*0),(+100),(^2)] <*> [1,2,3]
+[0,0,0,101,102,103,1,4,9]
+
+-- Use applicative operator <$> and <*> intead of list comprehensions
+ghci> [ x*y | x <- [2,5,10], y <- [8,10,11]]
+[16,20,22,40,50,55,80,100,110]
+ghci> (*) <$> [2,5,10] <*> [8,10,11]
+[16,20,22,40,50,55,80,100,110]
+```
+
+`IO` is an `Applicative`
+
+```haskell
+instance Applicative IO where
+    pure = return
+    a <*> b = do
+        f <- a
+        x <- b
+        return (f x)
+	
+myAction :: IO String
+myAction = do
+    a <- getLine
+    b <- getLine
+    return $ a ++ b
+
+myAction :: IO String
+myAction = (++) <$> getLine <*> getLine
+```
+
+`(->) r` is an `Applicative`
+
+```haskell
+instance Applicative ((->) r) where
+    pure x = (\_ -> x)
+    f <*> g = \x -> f x (g x)
+```
 
 ### *Kinds*
 
