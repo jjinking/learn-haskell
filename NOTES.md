@@ -948,6 +948,41 @@ ghci> sequenceA [[1,2,3],[4,5,6],[3,4,4],[]]
 []
 ```
 
+### Monoids
+
+Type class where there is an associative binary function and a neutral (identity) value wrt that function.
+
+```haskell
+-- No type constructor required, just concrete type `m` only
+class Monoid m where
+    mempty :: m
+    mappend :: m -> m -> m
+    mconcat :: [m] -> m
+    mconcat = foldr mappend mempty
+    
+-- Lists are monoids
+instance Monoid [a] where
+    mempty = []
+    mappend = (++)
+    
+-- Since (0, +, a::Num) and (1, *, a::Num) are both monoids, there are two `newtype`s in `Data.Monoid`
+newtype Product a =  Product { getProduct :: a }
+    deriving (Eq, Ord, Read, Show, Bounded)
+
+instance Num a => Monoid (Product a) where
+    mempty = Product 1
+    Product x `mappend` Product y = Product (x * y)
+
+ghci> getProduct $ Product 3 `mappend` Product 9
+27
+ghci> getProduct $ Product 3 `mappend` mempty
+3
+ghci> getProduct $ Product 3 `mappend` Product 4 `mappend` Product 2
+24
+ghci> getProduct . mconcat . map Product $ [3,4,2]
+24
+```
+
 ### *Kinds*
 
 kind = type of a type
