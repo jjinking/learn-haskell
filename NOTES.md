@@ -892,8 +892,33 @@ ghci> getZipList $ max <$> ZipList [1,2,3,4,5,3] <*> ZipList [5,3,1,2]
 [5,3,3,4]
 ghci> getZipList $ (,,) <$> ZipList "dog" <*> ZipList "cat" <*> ZipList "rat"
 [('d','c','r'),('o','a','a'),('g','t','t')]
+```
 
--- Applicative functors are more powerful than regular functors because it can apply functions between several functors
+#### Newtypes
+
+`newtype` keyword creates a new type that wraps around an existing type more efficiently than using `data`. But it allows only one value constructor with one field.
+
+```haskell
+newtype ZipList a = ZipList { getZipList :: [a] }
+
+-- New type is not automatically instance of type classes that the original was in
+newtype CharList = CharList { getCharList :: [Char] } deriving (Eq, Show)
+
+-- Creating functor on the first parameter of 2-tuple
+newtype Pair b a = Pair { getPair :: (a,b) }
+instance Functor (Pair c) where
+    fmap f (Pair (x, y)) = Pair (x, f y)
+    
+ghci> getPair $ fmap (*100) (Pair (2,3))
+(200,3)
+ghci> getPair $ fmap reverse (Pair ("london calling", 3))
+("gnillac nodnol",3)
+```
+
+Applicative functors are more powerful than regular functors because it can apply functions between several functors
+
+```
+-- Lift function `f` that takes 2 parameters instead of just 1 like in regular functors
 liftA2 :: (Applicative f) => (a -> b -> c) -> f a -> f b -> f c
 liftA2 f a b = f <$> a <*> b
 
@@ -922,7 +947,6 @@ ghci> sequenceA [[1,2,3],[4,5,6]]
 ghci> sequenceA [[1,2,3],[4,5,6],[3,4,4],[]]
 []
 ```
-
 
 ### *Kinds*
 
