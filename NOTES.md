@@ -1,5 +1,6 @@
-### Sources
-http://learnyouahaskell.com/
+# Haskell Study Notes
+
+Main source: http://learnyouahaskell.com/
 
 ## General
 
@@ -1428,9 +1429,9 @@ Predicates that act on `IOError`
 - `isPermissionError`
 - `isUserError`
 
+## Monads
 
-
-### *Monad* typeclass
+`Monads` are `Applicatives` that also has `>>=` aka *bind*
 
 ```haskell
  class Monad m where
@@ -1459,7 +1460,6 @@ instance MonadPlus Maybe where
     Nothing `mplus` x = x
     x `mplus` _         = x
 ```
-
 
 - Read learnyouahaskell
 - Watch youtube video that i found that summarizes learnyouahaskell
