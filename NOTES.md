@@ -1022,8 +1022,51 @@ GT
 
 #### Using monoids to *fold*
 
+##### `Foldable` type class
 
+Just implement the following for a type to be made an instance of `Foldable`
 
+```haskell
+import qualified Foldable as F
+
+foldMap :: (Monoid m, Foldable t) => (a -> m) -> t a -> m
+```
+
+Example with our `Tree`
+
+```haskell
+data Tree a = Empty | Node a (Tree a) (Tree a) deriving (Show, Read, Eq)
+
+instance F.Foldable Tree where
+    foldMap f Empty = mempty
+    foldMap f (Node x l r) = F.foldMap f l `mappend`
+                             f x           `mappend`
+                             F.foldMap f r
+
+testTree = Node 5
+            (Node 3
+                (Node 1 Empty Empty)
+                (Node 6 Empty Empty)
+            )
+            (Node 9
+                (Node 8 Empty Empty)
+                (Node 10 Empty Empty)
+            )
+
+-- foldr and foldl are free
+ghci> F.foldl (+) 0 testTree
+42
+ghci> F.foldl (*) 1 testTree
+64800
+
+-- Check if any of the values in the tree are equal to 3
+ghci> getAny $ F.foldMap (\x -> Any $ x == 3) testTree
+True
+
+-- Covert Tree to a List
+ghci> F.foldMap (\x -> [x]) testTree
+[1,3,6,5,8,9,10]
+```
 
 ### *Kinds*
 
