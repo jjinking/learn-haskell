@@ -981,7 +981,49 @@ ghci> getProduct $ Product 3 `mappend` Product 4 `mappend` Product 2
 24
 ghci> getProduct . mconcat . map Product $ [3,4,2]
 24
+
+-- Sum is similar to Product
+ghci> getSum $ Sum 2 `mappend` Sum 9
+11
+ghci> getSum $ mempty `mappend` Sum 3
+3
+ghci> getSum . mconcat . map Sum $ [1,2,3]
+6
 ```
+
+`Ordering` Monoid
+
+```haskell
+-- Use this to compare two strings by length, and if lengths are equal, compare alphabetically
+instance Monoid Ordering where
+    mempty = EQ
+    LT `mappend` _ = LT
+    EQ `mappend` y = y
+    GT `mappend` _ = GT
+
+-- Naive way
+lengthCompare :: String -> String -> Ordering
+lengthCompare x y = let a = length x `compare` length y
+                        b = x `compare` y
+                    in  if a == EQ then b else a
+
+-- Monoid way
+import Data.Monoid
+
+lengthCompare :: String -> String -> Ordering
+lengthCompare x y = (length x `compare` length y) `mappend`
+                    (x `compare` y)
+
+ghci> lengthCompare "zen" "ants"
+LT
+ghci> lengthCompare "zen" "ant"
+GT
+```
+
+#### Using monoids to *fold*
+
+
+
 
 ### *Kinds*
 
