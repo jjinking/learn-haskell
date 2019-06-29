@@ -1434,11 +1434,17 @@ Predicates that act on `IOError`
 `Monads` are `Applicatives` that also has `>>=` aka *bind*
 
 ```haskell
- class Monad m where
-        return :: a -> m a
-        (>>=) :: m a -> (a -> m b) -> m b
-        (>>)   :: m a -> m b -> m b
-        fail   :: String -> m a
+class Monad m where
+    -- same as `pure`
+    return :: a -> m a
+
+    (>>=) :: m a -> (a -> m b) -> m b
+
+    (>>) :: m a -> m b -> m b
+    x >> y = x >>= \_ -> y
+
+    fail :: String -> m a
+    fail msg = error msg
 ```
 
 Example with `Maybe`
@@ -1449,10 +1455,10 @@ data Maybe a = Just a | Nothing
 import Control.Monad
 
 instance Monad Maybe where
-    return           =   Just
-    Nothing  >>= f = Nothing
-    (Just x) >>= f = f x
-    fail _           =   Nothing
+    return           =  Just
+    Nothing  >>= f   = Nothing
+    (Just x) >>= f   = f x
+    fail _           =  Nothing
     
 -- MonadPlus
 instance MonadPlus Maybe where
@@ -1460,6 +1466,9 @@ instance MonadPlus Maybe where
     Nothing `mplus` x = x
     x `mplus` _         = x
 ```
+
+> **My Note**
+> `Monads` enable chaining computations in the context of the data type, i.e. `Maybe` enables chaining computations that might result in the absence of a resulting value, possibly caused by errors or failures.
 
 - Read learnyouahaskell
 - Watch youtube video that i found that summarizes learnyouahaskell
