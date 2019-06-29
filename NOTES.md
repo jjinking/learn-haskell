@@ -1467,6 +1467,37 @@ instance MonadPlus Maybe where
     x `mplus` _         = x
 ```
 
+### `do` notation
+
+```haskell
+-- Consider
+ghci> let x = 3; y = "!" in show x ++ y
+"3!"
+-- Similar, but in "failure context".
+ghci> Just 3 >>= (\x -> Just "!" >>= (\y -> Just (show x ++ y)))
+Just "3!"
+-- If any of the `Maybe` instances are replaced with `Nothing`, the end result is `Nothing`
+ghci> Nothing >>= (\x -> Just "!" >>= (\y -> Just (show x ++ y)))
+Nothing
+ghci> Just 3 >>= (\x -> Nothing >>= (\y -> Just (show x ++ y)))
+Nothing
+ghci> Just 3 >>= (\x -> Just "!" >>= (\y -> Nothing))
+Nothing
+
+-- Re-writing the above as a function
+foo :: Maybe String
+foo = Just 3   >>= (\x ->
+      Just "!" >>= (\y ->
+      Just (show x ++ y)))
+
+-- Re-writing with `do` notation (syntactic sugar)
+foo :: Maybe String
+foo = do
+    x <- Just 3
+    y <- Just "!"
+    Just (show x ++ y)
+```
+
 > **My Note**
 > `Monads` enable chaining computations in the context of the data type, i.e. `Maybe` enables chaining computations (in the form of functions) that might result in the absence of a resulting value, possibly caused by errors or failures.
 
