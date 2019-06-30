@@ -1501,6 +1501,18 @@ foo = do
 > **My Note**
 > `Monads` enable chaining computations in the context of the data type, i.e. `Maybe` enables chaining computations (in the form of functions) that might result in the absence of a resulting value, possibly caused by errors or failures.
 
+Example with `List`
+
+```haskell
+instance Monad [] where
+    return x = [x]
+    xs >>= f = concat (map f xs)
+    fail _ = []
+```
+
+> **My Note**
+> `List`s are non-deterministic values. They represent "one value that is actually many values at the same time" (from Learnyouahaskell). Therefore, while `Maybe` provides a context where there are possible failures, `List` provides a context where there is non-deterministic values.
+
 - Read learnyouahaskell
 - Watch youtube video that i found that summarizes learnyouahaskell
 - Watch the youtube video with fb employee
