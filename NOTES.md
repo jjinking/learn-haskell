@@ -1447,7 +1447,7 @@ class Monad m where
     fail msg = error msg
 ```
 
-Example with `Maybe`
+### Example with `Maybe`
 
 ```haskell
 data Maybe a = Just a | Nothing
@@ -1467,7 +1467,7 @@ instance MonadPlus Maybe where
     x `mplus` _         = x
 ```
 
-### `do` notation
+#### `do` notation
 
 ```haskell
 -- Consider
@@ -1501,17 +1501,89 @@ foo = do
 > **My Note**
 > `Monads` enable chaining computations in the context of the data type, i.e. `Maybe` enables chaining computations (in the form of functions) that might result in the absence of a resulting value, possibly caused by errors or failures.
 
-Example with `List`
+### Example with `List`
+
+> **My Note**
+> `List`s are non-deterministic values. They represent "one value that is actually many values at the same time" (from Learnyouahaskell). Therefore, while `Maybe` provides a context where there are possible failures, `List` provides a context where there is non-deterministic values.
 
 ```haskell
 instance Monad [] where
     return x = [x]
     xs >>= f = concat (map f xs)
     fail _ = []
+
+-- Example using `bind`
+ghci> [1,2] >>= \n -> ['a','b'] >>= \ch -> return (n,ch)
+[(1,'a'),(1,'b'),(2,'a'),(2,'b')
+
+-- Same example using `do` notation
+listOfTuples :: [(Int,Char)]
+listOfTuples = do
+    n <- [1,2]
+    ch <- ['a','b']
+    return (n,ch)
+
+-- Same example using list comprehension, which is just syntactic sugar for using lists as monads
+ghci> [ (n,ch) | n <- [1,2], ch <- ['a','b'] ]
+[(1,'a'),(1,'b'),(2,'a'),(2,'b')]
 ```
 
-> **My Note**
-> `List`s are non-deterministic values. They represent "one value that is actually many values at the same time" (from Learnyouahaskell). Therefore, while `Maybe` provides a context where there are possible failures, `List` provides a context where there is non-deterministic values.
+#### `MonadPlus` type class
+
+`Monad`s that can also act as `Monoid`s
+
+```haskell
+class Monad m => MonadPlus m where
+    mzero :: m a
+    mplus :: m a -> m a -> m a
+
+-- List is both Monoid and Monad
+instance MonadPlus [] where
+    mzero = []
+    mplus = (++)
+```
+
+#### Guard function requires `MonadPlus`
+
+```haskell
+guard :: (MonadPlus m) => Bool -> m ()
+guard True = return ()
+guard False = mzero
+
+ghci> guard (5 > 2) :: Maybe ()
+Just ()
+ghci> guard (1 > 2) :: Maybe ()
+Nothing
+ghci> guard (5 > 2) :: [()]
+[()]
+ghci> guard (1 > 2) :: [()]
+[]
+
+-- Using `>>` with the guard function
+ghci> guard (5 > 2) >> return "cool" :: [String]
+["cool"]
+ghci> guard (1 > 2) >> return "cool" :: [String]
+[]
+```
+
+#### `List` monad can use `guard` functions for filtering
+
+```haskell
+ghci> [ x | x <- [1..50], '7' `elem` show x ]
+[7,17,27,37,47]
+
+ghci> [1..50] >>= (\x -> guard ('7' `elem` show x) >> return x)
+[7,17,27,37,47]
+
+-- Using `do` notation - the `return x` at the bottom is basically `>> return x` above using `guard`
+-- If `return x` is not present at the bottom of the `do` expression, the following will return [()()...()] instead of the filtered elements
+sevensOnly :: [Int]
+sevensOnly = do
+    x <- [1..50]
+    guard ('7' `elem` show x)
+    return x
+```
+
 
 - Read learnyouahaskell
 - Watch youtube video that i found that summarizes learnyouahaskell
