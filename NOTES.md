@@ -1584,6 +1584,30 @@ sevensOnly = do
     return x
 ```
 
+### Monad Laws
+
+```haskell
+-- 1. Left Identity
+(return x >>= f) = (f x)
+-- 2. Right Identity
+(m >>= return) = m
+-- 3. Associativity
+((m >>= f) >>= g) = (m >>= (\x -> f x >>= g))
+
+-- Alternatively using <=< defined below:
+
+-- Composing two monadic functions
+(<=<) :: (Monad m) => (b -> m c) -> (a -> m b) -> (a -> m c)
+f <=< g = (\x -> g x >>= f)
+
+-- 1. Left Identity
+(f <=< return) = f
+-- 2. Right Identity
+(return <=< f) = f
+-- 3. Associativity
+(f <=< (g <=< h)) = ((f <=< g) <=< h)
+```
+
 
 - Read learnyouahaskell
 - Watch youtube video that i found that summarizes learnyouahaskell
