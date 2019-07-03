@@ -1608,6 +1608,28 @@ f <=< g = (\x -> g x >>= f)
 (f <=< (g <=< h)) = ((f <=< g) <=< h)
 ```
 
+### Monads in mtl
+
+**mtl** is a package that contains some useful monads
+
+Command to see which Haskell packages are installed
+
+```zsh
+ghc-pkg list
+```
+
+#### Writer
+
+`Control.Monad.Writer` module
+
+```haskell
+newtype Writer w a = Writer { runWriter :: (a, w) }
+
+instance (Monoid w) => Monad (Writer w) where
+    return x = Writer (x, mempty)
+    (Writer (x,v)) >>= f = let (Writer (y, v')) = f x in Writer (y, v `mappend` v')
+```
+
 
 - Read learnyouahaskell
 - Watch youtube video that i found that summarizes learnyouahaskell
