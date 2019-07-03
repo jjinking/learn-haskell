@@ -1618,7 +1618,7 @@ Command to see which Haskell packages are installed
 ghc-pkg list
 ```
 
-#### Writer
+#### Writer Monad
 
 `Control.Monad.Writer` module
 
@@ -1629,6 +1629,60 @@ instance (Monoid w) => Monad (Writer w) where
     return x = Writer (x, mempty)
     (Writer (x,v)) >>= f = let (Writer (y, v')) = f x in Writer (y, v `mappend` v')
 ```
+
+Do notation for `Writer`
+
+```haskell
+import Control.Monad.Writer
+
+logNumber :: Int -> Writer [String] Int
+logNumber x = Writer (x, ["Got number: " ++ show x])
+
+multWithLog :: Writer [String] Int
+multWithLog = do
+    a <- logNumber 3
+    b <- logNumber 5
+    tell ["Gonna multiply these two"]
+    return (a*b)
+
+-- Since `return` just puts the result in minimal context, it doesn't add anything to the log
+-- `tell` just adds monoid log, but has the result value ().
+ghci> runWriter multWithLog
+(15,["Got number: 3","Got number: 5","Gonna multiply these two"])
+```
+
+GCD example
+
+```haskell
+gcd' :: Int -> Int -> Int
+gcd' a b
+    | b == 0    = a
+    | otherwise = gcd' b (a `mod` b)
+
+-- With logging via Writer monad
+
+import Control.Monad.Writer
+
+gcd' :: Int -> Int -> Writer [String] Int
+gcd' a b
+    | b == 0 = do
+        tell ["Finished with " ++ show a]
+        return a
+    | otherwise = do
+        tell [show a ++ " mod " ++ show b ++ " = " ++ show (a `mod` b)]
+        gcd' b (a `mod` b)
+
+ghci> fst $ runWriter (gcd' 8 3)
+1
+ghci> mapM_ putStrLn $ snd $ runWriter (gcd' 8 3)
+8 mod 3 = 2
+3 mod 2 = 1
+2 mod 1 = 0
+Finished with 1
+```
+
+#### Reader Monad
+
 
 
 - Read learnyouahaskell
