@@ -1683,7 +1683,13 @@ Finished with 1
 
 #### Reader Monad
 
+Functions `(->) r` are functors and applicatives, and also monads
 
+```haskell
+instance Monad ((->) r) where  
+    return x = \_ -> x  
+    h >>= f = \w -> f (h w) w  
+```
 
 - Read learnyouahaskell
 - Watch youtube video that i found that summarizes learnyouahaskell
