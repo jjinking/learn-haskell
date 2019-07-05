@@ -1686,10 +1686,70 @@ Finished with 1
 Functions `(->) r` are functors and applicatives, and also monads
 
 ```haskell
-instance Monad ((->) r) where  
-    return x = \_ -> x  
-    h >>= f = \w -> f (h w) w  
+instance Monad ((->) r) where
+    return x = \_ -> x
+    h >>= f = \w -> f (h w) w
+
+import Control.Monad.Instances  
+
+-- Similar to the case with Applicatives, the result is x -> (x * 2) + (x + 10)
+addStuff :: Int -> Int
+addStuff = do
+    a <- (*2)
+    b <- (+10)
+    return (a+b)
+
+ghci> addStuff 3
+19
 ```
+
+#### State Monad
+
+`Control.Monad.State` module
+
+```haskell
+newtype State s a = State { runState :: s -> (a,s) }
+
+instance Monad (State s) where
+    return x = State $ \s -> (x,s)
+    (State h) >>= f = State $ \s -> let (a, newState) = h s
+                                        (State g) = f a
+                                    in  g newState
+```
+
+Example with stack implementation using `State` monad
+
+```haskell
+import Control.Monad.State
+
+pop :: State Stack Int
+pop = State $ \(x:xs) -> (x,xs)
+
+push :: Int -> State Stack ()
+push a = State $ \xs -> ((),a:xs)
+
+-- Simple example
+stackManip :: State Stack Int
+stackManip = do
+    push 3
+    a <- pop
+    pop
+    
+-- Example with conditionals
+stackStuff :: State Stack ()
+stackStuff = do
+    a <- pop
+    if a == 5
+        then push 5
+        else do
+            push 3
+            push 8
+
+-- Example usage
+ghci> runState stackStuff [9,0,2,1,0]
+((),[8,3,0,2,1,0])
+```
+
 
 - Read learnyouahaskell
 - Watch youtube video that i found that summarizes learnyouahaskell
