@@ -1722,9 +1722,17 @@ Example with stack implementation using `State` monad
 ```haskell
 import Control.Monad.State
 
+type Stack = [Int]
+
+-- Stack operations without State monad
+pop :: Stack -> (Int,Stack)
+pop (x:xs) = (x,xs)
+push :: Int -> Stack -> ((),Stack)
+push a xs = ((),a:xs)
+
+-- Stack operations with State monad
 pop :: State Stack Int
 pop = State $ \(x:xs) -> (x,xs)
-
 push :: Int -> State Stack ()
 push a = State $ \xs -> ((),a:xs)
 
@@ -1749,6 +1757,28 @@ stackStuff = do
 ghci> runState stackStuff [9,0,2,1,0]
 ((),[8,3,0,2,1,0])
 ```
+
+##### `MonadState` type class
+
+`get` and `put` functions
+
+```haskell
+get = State $ \s -> (s,s)
+put newState = State $ \s -> ((),newState)
+
+stackyStack :: State Stack ()
+stackyStack = do
+    stackNow <- get
+    if stackNow == [1,2,3]
+        then put [8,3,1]
+        else put [9,2,1]
+```
+
+
+
+
+
+
 
 
 - Read learnyouahaskell
