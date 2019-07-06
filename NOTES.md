@@ -1758,7 +1758,7 @@ ghci> runState stackStuff [9,0,2,1,0]
 ((),[8,3,0,2,1,0])
 ```
 
-##### `MonadState` type class
+##### `MonadState` type class (maybe delete this section)
 
 `get` and `put` functions
 
@@ -1774,9 +1774,56 @@ stackyStack = do
         else put [9,2,1]
 ```
 
+##### Random number generator
 
+```haskell
+import System.Random
+import Control.Monad.State
 
+-- Recall `random :: (RandomGen g, Random a) => g -> (a, g)`
+randomSt :: (RandomGen g, Random a) => State g a
+randomSt = State random
+  
+threeCoins :: State StdGen (Bool,Bool,Bool)
+threeCoins = do
+    a <- randomSt
+    b <- randomSt
+    c <- randomSt
+    return (a,b,c)
 
+ghci> runState threeCoins (mkStdGen 33)
+((True,False,True),680029187 2103410263)
+```
+
+#### Either
+
+`Monad` instance for `Maybe` is in `Control.Monad.Error`
+
+```haskell
+instance (Error e) => Monad (Either e) where
+    return x = Right x
+    Right x >>= f = f x
+    Left err >>= f = Left err
+    fail msg = Left (strMsg msg)
+    
+-- strMsg is used to create an instance of `Error` type class, which `String` is a member of
+ghci> :t strMsg
+strMsg :: (Error a) => String -> a
+ghci> strMsg "boom!" :: String
+"boom!"
+
+-- The `Error e` constraint causes this error if you don't specify error type signature
+ghci> Right 3 >>= \x -> return (x + 100)
+<interactive>:1:0:
+    Ambiguous type variable `a' in the constraints:
+      `Error a' arising from a use of `it' at <interactive>:1:0-33
+      `Show a' arising from a use of `print' at <interactive>:1:0-33
+    Probable fix: add a type signature that fixes these type variable(s)
+
+-- The correct way
+ghci> Right 3 >>= \x -> return (x + 100) :: Either String Int
+Right 103
+```
 
 
 
