@@ -1827,10 +1827,12 @@ Right 103
 
 ### Useful Monadic Functions
 
+#### Monatic equivalent functions that `Functor` and `Applicative` provide
+
 Theoretically, every monad is an applicative functor and every applicative functor is a functor.
 But the even though the Haskell implementation enforces `Applicative` requires `Functor`, `Monad` doesn't require `Applicative` because `Applicative` was added after `Monad`
 
-#### `liftM`
+##### `liftM`
 
 Pretty much `fmap` for Monads
 
@@ -1838,6 +1840,80 @@ Pretty much `fmap` for Monads
 liftM :: (Monad m) => (a -> b) -> m a -> m b
 liftM f m = m >>= (\x -> return (f x))
 ```
+
+##### `ap`
+
+Pretty much `<*>` for Monads
+
+```haskell
+ap :: (Monad m) => m (a -> b) -> m a -> m b
+ap mf m = do
+    f <- mf
+    x <- m
+    return (f x)
+```
+
+##### `liftA2` and `liftM2`
+
+Convenience function for applying a function with 2 `Applicative`s
+
+```haskell
+liftA2 :: (Applicative f) => (a -> b -> c) -> f a -> f b -> f c
+liftA2 f x y = f <$> x <*> y
+```
+
+`liftM2`, `liftM3`, `liftM4`, `liftM5` is similar with `Monad` constraint
+
+#### `join`
+
+Flatten nested monads
+
+Note: `m >>= f` always equals `join (fmap f m)`
+
+```haskell
+join :: (Monad m) => m (m a) -> m a
+join mm = do
+    m <- mm
+    m
+
+ghci> join (Just (Just 9))
+Just 9
+ghci> join (Just Nothing)
+Nothing
+ghci> join Nothing
+Nothing
+-- For lists, `join` is just `concat`
+ghci> join [[1,2,3],[4,5,6]]
+[1,2,3,4,5,6]
+-- For writer, join will `mappend` the monoid values, starting with the outermost
+ghci> runWriter $ join (Writer (Writer (1,"aaa"),"bbb"))
+(1,"bbbaaa")
+ghci> join (Right (Right 9)) :: Either String Int
+Right 9
+ghci> join (Right (Left "error")) :: Either String Int
+Left "error"
+ghci> join (Left "error") :: Either String Int
+Left "error"
+ghci> runState (join (State $ \s -> (push 10,1:2:s))) [0,0,0]
+((),[10,1,2,0,0,0])
+```
+
+#### `filterM`
+
+```haskell
+filter :: (a -> Bool) -> [a] -> [a]
+filterM :: (Monad m) => (a -> m Bool) -> [a] -> m [a]
+
+ghci> filter (\x -> x < 4) [9,1,5,2,10,3]
+[1,2,3]
+
+
+```
+
+
+
+
+
 
 - Read learnyouahaskell
 - Watch youtube video that i found that summarizes learnyouahaskell
