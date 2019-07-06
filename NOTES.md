@@ -1825,8 +1825,19 @@ ghci> Right 3 >>= \x -> return (x + 100) :: Either String Int
 Right 103
 ```
 
+### Useful Monadic Functions
 
+Theoretically, every monad is an applicative functor and every applicative functor is a functor.
+But the even though the Haskell implementation enforces `Applicative` requires `Functor`, `Monad` doesn't require `Applicative` because `Applicative` was added after `Monad`
 
+#### `liftM`
+
+Pretty much `fmap` for Monads
+
+```haskell
+liftM :: (Monad m) => (a -> b) -> m a -> m b
+liftM f m = m >>= (\x -> return (f x))
+```
 
 - Read learnyouahaskell
 - Watch youtube video that i found that summarizes learnyouahaskell
@@ -1841,4 +1852,5 @@ Right 103
     - https://byorgey.wordpress.com/2009/01/12/abstraction-intuition-and-the-monad-tutorial-fallacy/
   - http://blog.sigfpe.com/2006/08/you-could-have-invented-monads-and.html
   - http://web.archive.org/web/20081206204420/http://www.loria.fr/~kow/monads/index.html
+
 
