@@ -2016,9 +2016,7 @@ ghci> getProb flipThree
  (False,1 % 40),(False,9 % 40),(False,1 % 40),(True,9 % 40)]
 ```
 
-- Read learnyouahaskell
 - Watch youtube video that i found that summarizes learnyouahaskell
-- Watch the youtube video with fb employee
 - Watch safarionline course
 - Read articles
   - https://www.lambdacat.com/the-midnight-monad-a-journey-to-enlightenment/
