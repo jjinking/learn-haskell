@@ -2017,7 +2017,8 @@ ghci> getProb flipThree
 ```
 
 - Real World Haskell
-- Watch youtube video that i found that summarizes learnyouahaskell
+- Thinking Functionally with Haskell
+- Youtube video that summarizes [learnyouahaskell](https://www.youtube.com/watch?v=02_H3LjqMr8&t=426s)
 - Watch safarionline course
 - Read articles
   - https://www.lambdacat.com/the-midnight-monad-a-journey-to-enlightenment/
