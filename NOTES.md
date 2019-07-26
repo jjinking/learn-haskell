@@ -2016,6 +2016,7 @@ ghci> getProb flipThree
  (False,1 % 40),(False,9 % 40),(False,1 % 40),(True,9 % 40)]
 ```
 
+- Real World Haskell
 - Watch youtube video that i found that summarizes learnyouahaskell
 - Watch safarionline course
 - Read articles
